@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 21
-    buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "com.exact.imis.enquire"
         minSdkVersion 7
@@ -17,9 +16,10 @@ android {
     }
     productFlavors {
     }
+    buildToolsVersion '30.0.3'
 }
 
 dependencies {
-    compile project(':CaptureActivity')
-    compile project(':General')
+    implementation project(':CaptureActivity')
+    implementation project(':General')
 }

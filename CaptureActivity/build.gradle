@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
 android {
     compileSdkVersion 7
-    buildToolsVersion '27.0.3'
 
     defaultConfig {
         minSdkVersion 7
@@ -14,8 +13,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+    buildToolsVersion '30.0.3'
 }
 
 dependencies {
-    compile files('libs/core.jar')
+    implementation files('libs/core.jar')
 }

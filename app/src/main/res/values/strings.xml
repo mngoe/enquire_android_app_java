@@ -7,7 +7,7 @@
      <color name="Black">#000000</color>
      <color name="Blue">#0000FF</color>
     
-    <string name="app_name">Enquire</string> 
+    <string name="app_name"> CS-Enregistrement</string>
     <string name="ReadOnly">SD Card is set to readonly mode. Please set the mode to read/write and restart the application.</string>
 	<string name="NoSDCard">IMIS needs external memory card to run. Please insert memory card and restart the application.</string>
 	<string name="ForceClose">Force Close</string>

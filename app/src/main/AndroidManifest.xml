@@ -21,7 +21,7 @@
 
     <application
         tools:replace="icon,label"
-        android:icon="@drawable/enquire"
+        android:icon="@drawable/minsante"
         android:label="@string/app_name" >
         <activity
             android:name=".EnquireActivity"

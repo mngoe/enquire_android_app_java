@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Recherche</string>
+    <string name="app_name"> CS-Enregistrement</string>
     <string name="ReadOnly">La carte SD est en mode lecture seule. Réglez le mode en lecture / écriture et redémarrez l\'application.</string>
     <string name="NoSDCard">IMIS a besoin d\'une carte mémoire externe pour être exécuté. Insérez la carte mémoire et redémarrez l\'application.</string>
     <string name="ForceClose">Forcer à quitter</string>
