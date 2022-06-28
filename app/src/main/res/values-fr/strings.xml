@@ -7,7 +7,7 @@
     <string name="OfflineMode">Mode hors ligne</string>
     <string name="FileNOtFound">Fichier non trouvé</string>
 
-    <string name="CHFID">Numéro d\'assuré</string>
+    <string name="CHFID">Numéro de chèque</string>
     <string name="Scan">Scanner</string>
     <string name="Go">Go</string>
     <string name="InsureeName">Nom</string>

@@ -20,6 +20,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,24 +29,34 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.SimpleAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
+import android.widget.Toast;
 
 public class EnquireActivity extends Activity {
     /** Called when the activity is first created. */
@@ -61,6 +72,7 @@ public class EnquireActivity extends Activity {
 	ProgressDialog pd;
 	NotificationManager mNotificationManager;
 	Vibrator vibrator;
+	Button btnAdd;
 	
 	ArrayList<HashMap<String, String>> PolicyList = new ArrayList<HashMap<String,String>>();
 	
@@ -72,6 +84,7 @@ public class EnquireActivity extends Activity {
 	final String Path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/IMIS/";
 	final CharSequence[] lang = {"English","Français"};
 	final int SIMPLE_NOTIFICATION_ID = 1;
+	String sex;
 	
 	
 	String result;
@@ -107,6 +120,7 @@ public class EnquireActivity extends Activity {
 						//Check if network available
 						if (_General.isNetworkAvailable(EnquireActivity.this)) {
 //			        	tvMode.setText(Html.fromHtml("<font color='green'>Online mode.</font>"));
+							//initializeDb3File();
 
 						} else {
 //			        	tvMode.setText(Html.fromHtml("<font color='red'>Offline mode.</font>"));
@@ -131,6 +145,7 @@ public class EnquireActivity extends Activity {
 						btnScan = (ImageButton) findViewById(R.id.btnScan);
 						lv = (ListView) findViewById(R.id.listView1);
 						ll = (LinearLayout) findViewById(R.id.llListView);
+						btnAdd = (Button) findViewById(R.id.btnAdd);
 
 
 						iv.setOnClickListener(new OnClickListener() {
@@ -184,6 +199,14 @@ public class EnquireActivity extends Activity {
 								//if (!CheckCHFID())return;
 
 
+							}
+						});
+
+						btnAdd.setOnClickListener(new OnClickListener() {
+							@Override
+							public void onClick(View v) {
+								Intent intent = new Intent(EnquireActivity.this, AddPatientActivity.class);
+								startActivity(intent);
 							}
 						});
 
@@ -558,5 +581,133 @@ public class EnquireActivity extends Activity {
     	lv.setAdapter(null);
     }
 
-    
+	//ajouter un numéro de cheque
+	public void InsertInsureeNumber(String Numero, String Statut) {
+		try {
+			ContentValues cv = new ContentValues();
+			cv.put("Number", Numero);
+			cv.put("Statut", Statut);
+			db.insert("tblInsureeNumbers", null, cv);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+
+	public void createOrOpenDatabases() {
+		if (!checkDatabase()) {
+			db = SQLiteDatabase.openOrCreateDatabase(Path +"ImisData.db3", null);
+		}
+	}
+
+	public boolean checkIfAny(String table) {
+		boolean tableExists = false;
+		boolean any = false;
+		try {
+			Cursor c;
+			c = db.query(true, "sqlite_master", new String[]{"tbl_name"}, "tbl_name = ?", new String[]{table},
+					null, null, null, "1");
+
+			tableExists = c.getCount() > 0;
+			c.close();
+
+			if (tableExists) {
+				c = db.query(table, null, null, null, null, null, null, "1");
+				any = c.getCount() > 0;
+				c.close();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return any;
+		}
+		return any;
+	}
+
+	public boolean checkDatabase() {
+		return db != null && db.isOpen();
+	}
+
+	public void createTables() {
+		try {
+			db.execSQL("CREATE TABLE IF NOT EXISTS tblInsureeNumbers(Number text, Statut text);");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void initializeDb3File() {
+		if (checkDatabase() || checkIfAny("tblInsureeNumbers")) {
+			getInsureeNumbers();
+		}else{
+			createOrOpenDatabases();
+			createTables();
+		}
+	}
+
+	public boolean getInsureeNumbers(){
+		if (_General.isNetworkAvailable(EnquireActivity.this)) {
+
+			Thread thread = new Thread(() -> {
+				String InsureeNumbers;
+
+				String functionName = "claim/GetInsureeNumber";
+				try {
+                    /*String content = toRestApi.getFromRestApi(functionName);
+
+                    JSONObject ob;
+
+                    ob = new JSONObject(content);
+                    controls = ob.getString("insuree_numbers");
+                    sqlHandler.ClearAll("tblInsureeNumbers");
+                    //Insert Diagnosese
+                    JSONArray arrControls;
+                    JSONObject objControls;
+                    arrControls = new JSONArray(controls);
+                    for (int i = 0; i < arrControls.length(); i++) {
+                        objControls = arrControls.getJSONObject(i);
+                        sqlHandler.InsertInsureeNumber(objControls.getString("number"), objControls.getString("statut"));
+                    }*/
+
+					ClearAll("tblInsureeNumbers");
+
+					InsertInsureeNumber("2022", "Disponible");
+					InsertInsureeNumber("2021", "En cours");
+					InsertInsureeNumber("2020", "Annulé");
+
+
+				} catch (/*JSONException e*/ NullPointerException e) {
+					e.printStackTrace();
+				}
+			});
+			thread.start();
+		} else {
+			return false;
+		}
+		return true;
+
+	}
+
+	public void ClearAll(String tblName) {
+		try {
+			db.delete(tblName, null, null);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+
+
+
+
+
+
+
+	public void checkButton(View v,int r, RadioButton radioButton){
+    	int radioId = r;
+    	radioButton = (RadioButton)findViewById(radioId);
+    	sex = radioButton.getText().toString();
+	}
+
 }
