@@ -4,8 +4,8 @@ android {
     compileSdk 21
     defaultConfig {
         applicationId "com.exact.imis.enquire"
-        minSdkVersion 21
-        targetSdkVersion 21
+        minSdkVersion 7
+        targetSdkVersion 7
 
     }
     buildTypes {
@@ -22,5 +22,4 @@ android {
 dependencies {
     implementation project(':CaptureActivity')
     implementation project(':General')
-    implementation 'com.android.support.constraint:constraint-layout:2.0.4'
 }
