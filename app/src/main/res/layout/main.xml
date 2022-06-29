@@ -102,7 +102,7 @@
 	<LinearLayout
 	    android:id="@+id/llListView"
 	    android:visibility="invisible"
-	    android:layout_height="450dp"
+	    android:layout_height="fill_parent"
 	    android:layout_width="fill_parent"
 	    android:background="@color/Green">
 
@@ -119,22 +119,6 @@
 
 
 	</LinearLayout>
-
-	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="90dp"
-		android:orientation="horizontal">
-
-		<Button
-			android:id="@+id/btnAdd"
-			android:layout_width="fill_parent"
-			android:layout_height="fill_parent"
-			android:layout_weight="1"
-			android:text="ADD PATIENT"
-			android:drawableTop="@drawable/add"/>
-
-	</LinearLayout>
-
 
 	    
 </LinearLayout>

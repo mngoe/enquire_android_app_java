@@ -145,7 +145,6 @@ public class EnquireActivity extends Activity {
 						btnScan = (ImageButton) findViewById(R.id.btnScan);
 						lv = (ListView) findViewById(R.id.listView1);
 						ll = (LinearLayout) findViewById(R.id.llListView);
-						btnAdd = (Button) findViewById(R.id.btnAdd);
 
 
 						iv.setOnClickListener(new OnClickListener() {
@@ -199,14 +198,6 @@ public class EnquireActivity extends Activity {
 								//if (!CheckCHFID())return;
 
 
-							}
-						});
-
-						btnAdd.setOnClickListener(new OnClickListener() {
-							@Override
-							public void onClick(View v) {
-								Intent intent = new Intent(EnquireActivity.this, AddPatientActivity.class);
-								startActivity(intent);
 							}
 						});
 
@@ -580,134 +571,4 @@ public class EnquireActivity extends Activity {
     	PolicyList.clear();
     	lv.setAdapter(null);
     }
-
-	//ajouter un numéro de cheque
-	public void InsertInsureeNumber(String Numero, String Statut) {
-		try {
-			ContentValues cv = new ContentValues();
-			cv.put("Number", Numero);
-			cv.put("Statut", Statut);
-			db.insert("tblInsureeNumbers", null, cv);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-
-
-	public void createOrOpenDatabases() {
-		if (!checkDatabase()) {
-			db = SQLiteDatabase.openOrCreateDatabase(Path +"ImisData.db3", null);
-		}
-	}
-
-	public boolean checkIfAny(String table) {
-		boolean tableExists = false;
-		boolean any = false;
-		try {
-			Cursor c;
-			c = db.query(true, "sqlite_master", new String[]{"tbl_name"}, "tbl_name = ?", new String[]{table},
-					null, null, null, "1");
-
-			tableExists = c.getCount() > 0;
-			c.close();
-
-			if (tableExists) {
-				c = db.query(table, null, null, null, null, null, null, "1");
-				any = c.getCount() > 0;
-				c.close();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return any;
-		}
-		return any;
-	}
-
-	public boolean checkDatabase() {
-		return db != null && db.isOpen();
-	}
-
-	public void createTables() {
-		try {
-			db.execSQL("CREATE TABLE IF NOT EXISTS tblInsureeNumbers(Number text, Statut text);");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	private void initializeDb3File() {
-		if (checkDatabase() || checkIfAny("tblInsureeNumbers")) {
-			getInsureeNumbers();
-		}else{
-			createOrOpenDatabases();
-			createTables();
-		}
-	}
-
-	public boolean getInsureeNumbers(){
-		if (_General.isNetworkAvailable(EnquireActivity.this)) {
-
-			Thread thread = new Thread(() -> {
-				String InsureeNumbers;
-
-				String functionName = "claim/GetInsureeNumber";
-				try {
-                    /*String content = toRestApi.getFromRestApi(functionName);
-
-                    JSONObject ob;
-
-                    ob = new JSONObject(content);
-                    controls = ob.getString("insuree_numbers");
-                    sqlHandler.ClearAll("tblInsureeNumbers");
-                    //Insert Diagnosese
-                    JSONArray arrControls;
-                    JSONObject objControls;
-                    arrControls = new JSONArray(controls);
-                    for (int i = 0; i < arrControls.length(); i++) {
-                        objControls = arrControls.getJSONObject(i);
-                        sqlHandler.InsertInsureeNumber(objControls.getString("number"), objControls.getString("statut"));
-                    }*/
-
-					ClearAll("tblInsureeNumbers");
-
-					InsertInsureeNumber("2022", "Disponible");
-					InsertInsureeNumber("2021", "En cours");
-					InsertInsureeNumber("2020", "Annulé");
-
-
-				} catch (/*JSONException e*/ NullPointerException e) {
-					e.printStackTrace();
-				}
-			});
-			thread.start();
-		} else {
-			return false;
-		}
-		return true;
-
-	}
-
-	public void ClearAll(String tblName) {
-		try {
-			db.delete(tblName, null, null);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-	}
-
-
-
-
-
-
-
-
-	public void checkButton(View v,int r, RadioButton radioButton){
-    	int radioId = r;
-    	radioButton = (RadioButton)findViewById(radioId);
-    	sex = radioButton.getText().toString();
-	}
-
 }
